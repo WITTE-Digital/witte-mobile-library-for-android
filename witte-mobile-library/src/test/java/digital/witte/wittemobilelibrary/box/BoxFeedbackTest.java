@@ -1,18 +1,22 @@
 package digital.witte.wittemobilelibrary.box;
 
+import static org.junit.Assert.assertEquals;
+
+import android.os.Build;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import digital.witte.wittemobilelibrary.util.ByteUtils;
-import static org.junit.Assert.assertEquals;
 
+@Config(sdk = {Build.VERSION_CODES.P})
 @RunWith(RobolectricTestRunner.class)
 public class BoxFeedbackTest {
-
     private final static String BoxFeedbackLocked01 = "4C-42-0F-FA-50-08-00-37-00-D8";
     private final static String BoxFeedbackLocked02 = "4F-42-0F-FA-53-08-00-37-00-D9";
     private final static String BoxFeedbackLocked03 = "4C-42-0F-FA-4E-08-00-38-00-D9";
@@ -32,8 +36,7 @@ public class BoxFeedbackTest {
     private final static String BoxFeedbackDrawerOpen05 = "0D-C2-0F-FF-00-19-03-00-00-B0";
 
     @Test
-    public void createBoxFeedback_correct_Locked(){
-
+    public void createBoxFeedback_correct_Locked() {
         List<String> feedbackList = new ArrayList<>();
         feedbackList.add(BoxFeedbackLocked01);
         feedbackList.add(BoxFeedbackLocked02);
@@ -41,17 +44,17 @@ public class BoxFeedbackTest {
         feedbackList.add(BoxFeedbackLocked04);
         feedbackList.add(BoxFeedbackLocked05);
 
-        for(String bf : feedbackList){
+        for (String bf : feedbackList) {
 
             byte[] bytes = ByteUtils.toByteArray(bf.replace("-", ""));
             BoxFeedback boxFeedback = BoxFeedback.create(bytes);
-            if(BoxState.DRAWER_OPEN == boxFeedback.getBoxState()){
+            if (BoxState.DRAWER_OPEN == boxFeedback.getBoxState()) {
                 // the drawer of the box is opened
             }
-            else if(BoxState.LOCKED == boxFeedback.getBoxState()){
+            else if (BoxState.LOCKED == boxFeedback.getBoxState()) {
                 // the box has been locked
             }
-            else if(BoxState.UNLOCKED == boxFeedback.getBoxState()){
+            else if (BoxState.UNLOCKED == boxFeedback.getBoxState()) {
                 // the box has been opened
             }
             assertEquals(BoxState.LOCKED, boxFeedback.getBoxState());
@@ -59,8 +62,7 @@ public class BoxFeedbackTest {
     }
 
     @Test
-    public void createBoxFeedback_correct_Unlocked(){
-
+    public void createBoxFeedback_correct_Unlocked() {
         List<String> feedbackList = new ArrayList<>();
         feedbackList.add(BoxFeedbackUnlocked01);
         feedbackList.add(BoxFeedbackUnlocked02);
@@ -68,7 +70,7 @@ public class BoxFeedbackTest {
         feedbackList.add(BoxFeedbackUnlocked04);
         feedbackList.add(BoxFeedbackUnlocked05);
 
-        for(String bf : feedbackList){
+        for (String bf : feedbackList) {
 
             byte[] bytes = ByteUtils.toByteArray(bf.replace("-", ""));
             BoxFeedback boxFeedback = BoxFeedback.create(bytes);
@@ -78,8 +80,7 @@ public class BoxFeedbackTest {
     }
 
     @Test
-    public void createBoxFeedback_correct_DrawerOpen(){
-
+    public void createBoxFeedback_correct_DrawerOpen() {
         List<String> feedbackList = new ArrayList<>();
         feedbackList.add(BoxFeedbackDrawerOpen01);
         feedbackList.add(BoxFeedbackDrawerOpen02);
@@ -87,7 +88,7 @@ public class BoxFeedbackTest {
         feedbackList.add(BoxFeedbackDrawerOpen04);
         feedbackList.add(BoxFeedbackDrawerOpen05);
 
-        for(String bf : feedbackList){
+        for (String bf : feedbackList) {
 
             byte[] bytes = ByteUtils.toByteArray(bf.replace("-", ""));
             BoxFeedback boxFeedback = BoxFeedback.create(bytes);

@@ -8,7 +8,6 @@ public class ByteUtils {
      * @return byte array
      */
     public static byte[] toByteArray(String hex) {
-
         if (null == hex) {
 
             String message = "";
@@ -38,7 +37,6 @@ public class ByteUtils {
      * @return true if the bit is set
      */
     public static boolean isBitSet(byte byteValue, int bitIndex) {
-
         if (bitIndex < 0 || 7 < bitIndex) {
 
             String message = "";
