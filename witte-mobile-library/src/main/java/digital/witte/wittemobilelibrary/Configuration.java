@@ -1,11 +1,6 @@
 package digital.witte.wittemobilelibrary;
 
 public class Configuration {
-
-    private int _witteCustomerId;
-    private String _witteSdkKey;
-    private String _witteSubscriptionKey;
-
     /**
      * The tenant id used with the Tapkey backend.
      */
@@ -21,22 +16,13 @@ public class Configuration {
      */
     public final static String BleServiceUuid = "6e65742e-7470-6ba0-0000-060601810057";
 
-    public Configuration(int customerId, String sdkKey, String subscriptionKey) {
+    /**
+     * The Bluetooth LE advertising format for flinkey box 2.4.
+     */
+    public final static String BleAdvertisingFormatV1 = "6e65742e-7470-6ba0-0000-060601810057";
 
-        _witteCustomerId = customerId;
-        _witteSdkKey = sdkKey;
-        _witteSubscriptionKey = subscriptionKey;
-    }
-
-    public int getWitteCustomerId() {
-        return _witteCustomerId;
-    }
-
-    public String getWitteSdkKey() {
-        return _witteSdkKey;
-    }
-
-    public String getWitteSubscriptionKey() {
-        return _witteSubscriptionKey;
-    }
+    /**
+     * The Bluetooth LE advertising format for flinkey box 3.3.
+     */
+    public final static Integer BleAdvertisingFormatV2 = 0x5754;
 }

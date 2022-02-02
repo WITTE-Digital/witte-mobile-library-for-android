@@ -17,7 +17,6 @@ import digital.witte.wittemobilelibrary.util.ByteUtils;
  * Converts a physical lock id to a flinkey box id and vice versa.
  */
 public class BoxIdConverter {
-
     // Prefix byte count for physical lock IDs
     private final static int PrefixByteCount = 2;
 
@@ -43,7 +42,6 @@ public class BoxIdConverter {
      * @return Physical lock ID.
      */
     public static String toPhysicalLockId(String boxId) throws IllegalArgumentException {
-
         if (null == boxId) {
 
             String message = "The argument boxId must not be null.";
@@ -91,7 +89,6 @@ public class BoxIdConverter {
      * @return WITTE/flinkey Box ID
      */
     public static String toBoxId(String physicalLockId) throws IllegalArgumentException {
-
         String boxId = null;
 
         if (null == physicalLockId) {

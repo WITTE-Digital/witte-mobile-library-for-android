@@ -1,32 +1,21 @@
 # witte-mobile-mobile-library-for-android
 
-The WITTE Mobile Library for Android provides additional classes and methods to further assist with the integration of the WITTE backend and the Tapkey SDK in the scope of a mobile app.
+The WITTE Mobile Library for Android provides additional classes and methods to further assist with the integration of the Tapkey Mobile SDK  (TapkeyMobileLib) in the scope of a mobile app.
 
 ## Features
-* __Configuration__: WITTE Customer ID, WITTE Subscription Key, WITTE SDK Key. 
 * __flinkey Box ID conversion__: Convert flinkey Box IDs to physical lock IDs format and vice versa.
-* __flinkey Box feedback interpretation__: Parse and interpret the 10 byte box feedback in order to determine if the box ahs been opened or closed. 
-* __idToken retrieval__: Query a authentication token from the WITTE backend that is used to authenticate with the Tapkey backend.
+* __flinkey Box feedback interpretation__: Parse and interpret the 10 byte box feedback in order to determine if the box ahs been opened or closed.
 
 ## Getting Started
-### Configuration
-The configuration comprises customer specific configuration values required to access the WITTE backend as well as constants used in context of the Tapkey Mobile Library integration.
-```java
-import digital.witte.wittemobilelibrary.Configuration;
 
-private final static int CustomerId = <your WITTE customer ID>;
-private final static String SdkKey = <your WITTE SDK Key>;
-private final static String SubscriptionKey = <your WITTE subscription key>;
-
-Configuration WitteConfiguration = new Configuration(
-            CustomerId,
-            SdkKey,
-            SubscriptionKey);
-```
-#### Constants
+### Constants
+Constants used to initialize the Tapkey Mobile SDK (TapkeyMobileLib).
 ```java
 // "6e65742e-7470-6ba0-0000-060601810057"
-String uuid = Configuration.BleServiceUuid;
+String bleAdvertisingFormatV1 = Configuration.BleAdvertisingFormatV1;
+
+// 0x5754
+Integer bleAdvertisingFormatV2 = Configuration.BleAdvertisingFormatV2;
 
 // "wma.oauth"
 String ipId = Configuration.IpId;
@@ -73,51 +62,3 @@ else if(BoxState.UNLOCKED == boxFeedback.getBoxState()){
     // the box has been opened
 }
 ```
-
-### idToken retrieval
-The idToken is a Java Web Token that is required to authenticate a single user with the Tapkey Mobile Library. This library provides a class IdTokenRequest that retrieves a idToken from the WITTE backend using provided configuration properties and a WITTE user ID.
-
-#### IdTokenRequest with single configuration params
-
-```java
-import digital.witte.wittemobilelibrary.net;
-
-final int customerId = <your WITTE customer ID>;
-final String sdkKey = "<your WITTE SDK Key>";
-final String subKey = "<your WITTE subscription key>";
-final int userId = <the actual users WITTE ID>;
-
-String idToken = null;
-IdTokenRequest req = new IdTokenRequest();
-try {
-    idToken = req.execute(customerId, sdkKey, subKey, userId);
-}
-catch (IOException e) {
-    e.printStackTrace();
-}
-```
-
-#### IdTokenRequest with configuration object
-
-```java
-import digital.witte.wittemobilelibrary.net;
-
-private final static int CustomerId = <your WITTE customer ID>;
-private final static String SdkKey = <your WITTE SDK Key>;
-private final static String SubscriptionKey = <your WITTE subscription key>;
-
-Configuration configuration = new Configuration(
-            CustomerId,
-            SdkKey,
-            SubscriptionKey);
-
-String idToken = null;
-IdTokenRequest req = new IdTokenRequest();
-try {
-    idToken = request.execute(configuration, userId);
-}
-catch (IOException e) {
-    e.printStackTrace();
-}
-```
-

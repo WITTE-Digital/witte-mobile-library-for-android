@@ -1,51 +1,50 @@
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.4.1'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
-    }
+apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
+
+def githubPropertiesFile = rootProject.file("github.properties");
+def githubProperties = new Properties()
+githubProperties.load(new FileInputStream(githubPropertiesFile))
+
+def getVersionName = { ->
+    return "2.0.0"
 }
 
-apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
-apply plugin: 'com.jfrog.bintray'
+def getArtificatId = { ->
+    return "witte-mobile-library"
+}
 
-ext {
-    bintrayRepo = 'maven'
-    bintrayName = 'witte-mobile-library'
-    bintryOrganization = 'witte-digital'
+// https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-gradle-registry
+publishing{
+    publications {
+        gpr(MavenPublication) {
+            groupId 'digital.witte'
+            artifactId getArtificatId()
+            version getVersionName()
+            artifact("$buildDir/outputs/aar/${getArtificatId()}-release.aar")
+        }
+    }
 
-    publishedGroupId = 'digital.witte'
-    libraryName = 'witte-mobile-library'
-    artifact = 'witte-mobile-library'
-
-    libraryDescription = 'WITTE Mobile Library for Android'
-
-    siteUrl = 'https://github.com/WITTE-Digital/witte-mobile-library-for-android'
-    gitUrl = 'https://github.com/WITTE-Digital/witte-mobile-library-for-android.git'
-
-    libraryVersion = '1.0.0'
-
-    developerId = 'planB-witte'
-    developerName = 'WITTE Digital'
-    developerEmail = 'planB-witte@gmx.de'
-
-    licenseName = 'MIT License'
-    licenseUrl = 'https://github.com/WITTE-Digital/witte-mobile-library-for-android/blob/master/LICENSE'
-    allLicenses = ["MIT"]
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/WITTE-Digital/witte-mobile-library-for-android")
+            credentials {
+                username = System.getenv("GPR_USER") ?: githubProperties['gpr.usr']
+                password = System.getenv("GPR_API_KEY") ?: githubProperties['gpr.key']
+            }
+        }
+    }
 }
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 31
     testOptions.unitTests.includeAndroidResources = true
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 28
-        versionCode 1
-        versionName "1.0.0"
+        targetSdkVersion 31
+        versionCode 2
+        versionName "2.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -59,93 +58,10 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
-    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'androidx.annotation:annotation:1.3.0'
     testImplementation 'junit:junit:4.12'
-    testImplementation 'org.robolectric:robolectric:4.2'
-    testImplementation 'androidx.test:core:1.1.0'
+    testImplementation 'org.robolectric:robolectric:4.7.3'
+    testImplementation 'androidx.test:core:1.4.0'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-}
-
-group = publishedGroupId
-version = libraryVersion
-
-install {
-    repositories.mavenInstaller {
-        pom.project {
-            packaging 'aar'
-            groupId publishedGroupId
-            artifactId artifact
-
-            name libraryName
-            description libraryDescription
-            url siteUrl
-
-            licenses {
-                license {
-                    name licenseName
-                    url licenseUrl
-                }
-            }
-            developers {
-                developer {
-                    id developerId
-                    name developerName
-                    email developerEmail
-                }
-            }
-            scm {
-                connection gitUrl
-                developerConnection gitUrl
-                url siteUrl
-            }
-        }
-    }
-}
-
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from android.sourceSets.main.java.srcDirs
-}
-
-task javadoc(type: Javadoc) {
-    source = android.sourceSets.main.java.srcDirs
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
-artifacts {
-    archives javadocJar
-    archives sourcesJar
-}
-
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
-
-bintray {
-    user = properties.getProperty("bintray.user")
-    key = properties.getProperty("bintray.apikey")
-
-    configurations = ['archives']
-    pkg {
-        repo = bintrayRepo
-        name = bintrayName
-        userOrg = bintryOrganization
-        desc = libraryDescription
-        websiteUrl = siteUrl
-        vcsUrl = gitUrl
-        licenses = allLicenses
-        dryRun = false
-        publish = true
-        override = false
-        publicDownloadNumbers = true
-        version {
-            desc = libraryDescription
-        }
-    }
 }
