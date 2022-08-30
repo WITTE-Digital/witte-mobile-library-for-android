@@ -9,8 +9,10 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import digital.witte.wittemobilelibrary.util.ByteUtils;
 
@@ -34,6 +36,23 @@ public class BoxFeedbackTest {
     private final static String BoxFeedbackDrawerOpen03 = "0D-C2-0F-FF-00-19-03-00-00-AF";
     private final static String BoxFeedbackDrawerOpen04 = "0D-C3-0F-FF-00-19-03-00-00-AF";
     private final static String BoxFeedbackDrawerOpen05 = "0D-C2-0F-FF-00-19-03-00-00-B0";
+
+    private final static String BoxV3FeedbackBattery01 = "FF-3D-34-00-32-00-EC-28-FF-00";
+    private final static double BoxV3FeedbackBattery01Result = 93.65;
+    private final static String BoxV3FeedbackBattery02 = "FF-BD-34-00-32-00-F0-29-FF-00";
+    private final static double BoxV3FeedbackBattery02Result = 95.24;
+    private final static String BoxV3FeedbackBattery03 = "FF-3D-33-00-33-00-E0-1D-FF-00";
+    private final static double BoxV3FeedbackBattery03Result = 88.89;
+    private final static String BoxV3FeedbackBattery04 = "FF-BC-34-00-33-00-EC-2A-FF-00";
+    private final static double BoxV3FeedbackBattery04Result = 93.65;
+    private final static String BoxV3FeedbackBattery05 = "FF-3C-34-00-36-00-F0-1B-FF-00";
+    private final static double BoxV3FeedbackBattery05Result = 95.24;
+    private final static String BoxV3FeedbackBattery06 = "FF-BC-34-00-31-00-F0-28-FF-00";
+    private final static double BoxV3FeedbackBattery06Result = 95.24;
+    private final static String BoxV3FeedbackBattery07 = "FF-3D-34-00-31-00-F8-1D-FF-00";
+    private final static double BoxV3FeedbackBattery07Result = 98.41;
+    private final static String BoxV3FeedbackBattery08 = "FF-BD-34-00-31-00-F8-28-FF-00";
+    private final static double BoxV3FeedbackBattery08Result = 98.41;
 
     @Test
     public void createBoxFeedback_correct_Locked() {
@@ -71,7 +90,6 @@ public class BoxFeedbackTest {
         feedbackList.add(BoxFeedbackUnlocked05);
 
         for (String bf : feedbackList) {
-
             byte[] bytes = ByteUtils.toByteArray(bf.replace("-", ""));
             BoxFeedback boxFeedback = BoxFeedback.create(bytes);
 
@@ -89,11 +107,30 @@ public class BoxFeedbackTest {
         feedbackList.add(BoxFeedbackDrawerOpen05);
 
         for (String bf : feedbackList) {
-
             byte[] bytes = ByteUtils.toByteArray(bf.replace("-", ""));
             BoxFeedback boxFeedback = BoxFeedback.create(bytes);
 
             assertEquals(BoxState.DRAWER_OPEN, boxFeedback.getBoxState());
+        }
+    }
+
+    @Test
+    public void calculateBatteryStateOfCharge() {
+        // Hint: Battery state of charge is only available for flinkey Box 3.3 box feedback
+        List<Map.Entry<String, Double>> feedbackResultList = new ArrayList<>();
+        feedbackResultList.add(new AbstractMap.SimpleEntry<>(BoxV3FeedbackBattery01, BoxV3FeedbackBattery01Result));
+        feedbackResultList.add(new AbstractMap.SimpleEntry<>(BoxV3FeedbackBattery02, BoxV3FeedbackBattery02Result));
+        feedbackResultList.add(new AbstractMap.SimpleEntry<>(BoxV3FeedbackBattery03, BoxV3FeedbackBattery03Result));
+        feedbackResultList.add(new AbstractMap.SimpleEntry<>(BoxV3FeedbackBattery04, BoxV3FeedbackBattery04Result));
+        feedbackResultList.add(new AbstractMap.SimpleEntry<>(BoxV3FeedbackBattery05, BoxV3FeedbackBattery05Result));
+        feedbackResultList.add(new AbstractMap.SimpleEntry<>(BoxV3FeedbackBattery06, BoxV3FeedbackBattery06Result));
+        feedbackResultList.add(new AbstractMap.SimpleEntry<>(BoxV3FeedbackBattery07, BoxV3FeedbackBattery07Result));
+        feedbackResultList.add(new AbstractMap.SimpleEntry<>(BoxV3FeedbackBattery08, BoxV3FeedbackBattery08Result));
+
+        for (Map.Entry<String, Double> pair : feedbackResultList) {
+            byte[] bytes = ByteUtils.toByteArray(pair.getKey());
+            double batteryStateOfCharge = BoxFeedback.create(bytes).getBatteryStateOfCharge("C3-XX-XX-XX");
+            assertEquals(pair.getValue(), batteryStateOfCharge, 0.001);
         }
     }
 }

@@ -36,21 +36,20 @@ public class BoxIdConverter {
     private final static Pattern PhysicalLockIdPattern = Pattern.compile(PhysicalLockIdRegEx);
 
     /**
-     * Convert a WITTE/flinkey Box ID (e.g 'C1-08-F0-94') to a physical lock ID (e.g. 'BADBCPCU')
+     * Convert a flinkey Box ID (e.g 'C1-08-F0-94') to a physical lock ID (e.g. 'BADBCPCU')
      * that can be provided to the Tapkey Mobile SDK.
-     * @param boxId WITTE/flinkey Box ID.
+     *
+     * @param boxId flinkey Box ID.
      * @return Physical lock ID.
      */
     public static String toPhysicalLockId(String boxId) throws IllegalArgumentException {
         if (null == boxId) {
-
             String message = "The argument boxId must not be null.";
             throw new IllegalArgumentException(message);
         }
 
         if (!BoxIdPattern.matcher(boxId).matches()) {
-
-            String message = String.format("The argument boxId '%s' does not match the format of a WITTE/flinkey Box ID (e.g. 'C1-08-F0-94')", boxId);
+            String message = String.format("The argument boxId '%s' does not match the format of a flinkey Box ID (e.g. 'C1-08-F0-94')", boxId);
             throw new IllegalArgumentException(message);
         }
 
@@ -63,7 +62,7 @@ public class BoxIdConverter {
         // Create prefix containing the length information of the box ID
         ByteBuffer byteBuffer = ByteBuffer.allocate(PrefixByteCount);
         byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-        byteBuffer.putShort((short)boxIdBytes.length);
+        byteBuffer.putShort((short) boxIdBytes.length);
         byte[] prefixBytes = byteBuffer.array();
 
         // Concat arrays
@@ -85,6 +84,7 @@ public class BoxIdConverter {
 
     /**
      * Convert a physical lock ID to a WITTE/flinkey Box ID.
+     *
      * @param physicalLockId The physical lock ID as required by the Tapkey Mobile Lib API.
      * @return WITTE/flinkey Box ID
      */
@@ -131,5 +131,20 @@ public class BoxIdConverter {
         }
 
         return boxId;
+    }
+
+    /**
+     * Check if a string is a valid flinkey Box ID.
+     * @param boxId flinkey Box ID.
+     * @return true if parameter boxId is is a valid flinkey Box ID.
+     */
+    public static boolean isValidBoxId(String boxId) {
+        boolean isValidBoxId = false;
+
+        if (null != boxId && !boxId.trim().isEmpty()) {
+            isValidBoxId = BoxIdPattern.matcher(boxId).matches();
+        }
+
+        return isValidBoxId;
     }
 }
