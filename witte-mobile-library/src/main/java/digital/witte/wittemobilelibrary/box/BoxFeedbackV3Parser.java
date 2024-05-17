@@ -20,71 +20,110 @@ public class BoxFeedbackV3Parser {
      * null otherwise.
      */
     public static BoxFeedbackV3 parse(byte[] data) {
-        // Check for null input or incorrect data length
         if (data == null || data.length <= (RESPONSE_HEADER_LENGTH + GROUP_HEADER_LENGTH) || data.length == LEGACY_BOX_FEEDBACK_LENGTH) {
             return null;
         }
 
-        BoxFeedbackV3 boxFeedback = new BoxFeedbackV3();
+        BoxFeedbackV3 boxFeedback = null;
+        int index = RESPONSE_HEADER_LENGTH;
 
-        // Parsing starts after the response header
-        for (int i = (RESPONSE_HEADER_LENGTH + 1); i < data.length; i++) {
-            int groupNo = data[i - 1];
-            int groupSize = data[i];
+        while (index+1 < data.length) {
+            int groupNo = data[index++];
+            int groupSize = data[index++];
 
-            // Ensure not reading beyond buffer's end
-            if (i + groupSize >= data.length) {
+            if (index + groupSize > data.length) {
                 return null;
             }
 
-            // Parse specific group data
-            if (1 == groupNo) {
-                boxFeedback.setBatteryStateOfCharge((byte) (data[i + 1] & 0x7F));
-                boxFeedback.setBatteryIsCharging((data[i + 1] & (1 << 7)) != 0);
-                boxFeedback.setBatteryChargerIsConnected((data[i + 2] & (1 << 7)) != 0);
-                boxFeedback.setDrawerState((data[i + 3] & (1 << 7)) != 0);
-                boxFeedback.setDrawerAccessibility((data[i + 3] & (1 << 6)) != 0);
-            }
-            else if (3 == groupNo) {
-                int j = i;
-                int nfcTagNumber = 1;
-                while (j < (i + groupSize) && nfcTagNumber <= 3) {
-                    // Mask the first 4 bits (0x0F is 00001111 in binary)
-                    int uidLength = data[j + 1] & 0x0F;
-                    if (0 < uidLength) {
-                        byte[] nfcUid = new byte[uidLength];
-                        System.arraycopy(data, j + 2, nfcUid, 0, uidLength);
-
-                        // Convert nfcUid to a hexadecimal string
-                        StringBuilder hexString = new StringBuilder();
-                        for (byte b : nfcUid) {
-                            hexString.append(String.format("%02X", b));
-                        }
-
-                        String nfcTagUid = hexString.toString();
-                        System.out.println(nfcTagUid);
-
-                        if (1 == nfcTagNumber) {
-                            boxFeedback.setNfcTag1Uid(nfcTagUid);
-                            nfcTagNumber++;
-                        }
-                        else if (2 == nfcTagNumber) {
-                            boxFeedback.setNfcTag2Uid(nfcTagUid);
-                            nfcTagNumber++;
-                        }
-                        else if (3 == nfcTagNumber) {
-                            boxFeedback.setNfcTag3Uid(nfcTagUid);
-                            nfcTagNumber++;
-                        }
+            switch (groupNo) {
+                case 1: {
+                    if (null == boxFeedback) {
+                        boxFeedback = new BoxFeedbackV3();
                     }
-
-                    j = j + uidLength + 1;
+                    parseBatteryAndDrawerState(data, index, boxFeedback);
+                    break;
                 }
+                case 3: {
+                    if (null == boxFeedback) {
+                        boxFeedback = new BoxFeedbackV3();
+                    }
+                    parseNfcTags(data, index, groupSize, boxFeedback);
+                    break;
+                }
+
+                default:
+                    break;
             }
 
-            i += (1 + groupSize); // Proceed with next group
+            index += groupSize;
         }
 
         return boxFeedback;
+    }
+
+    /**
+     * Parses battery and drawer state information from the data array.
+     *
+     * @param data        Byte array containing the feedback data.
+     * @param index       The current index in the data array.
+     * @param boxFeedback The BoxFeedbackV3 object to populate.
+     */
+    private static void parseBatteryAndDrawerState(byte[] data, int index, BoxFeedbackV3 boxFeedback) {
+        boxFeedback.setBatteryStateOfCharge((byte) (data[index] & 0x7F));
+        boxFeedback.setBatteryIsCharging((data[index] & (1 << 7)) != 0);
+        boxFeedback.setBatteryChargerIsConnected((data[index + 1] & (1 << 7)) != 0);
+        boxFeedback.setDrawerState((data[index + 2] & (1 << 7)) != 0);
+        boxFeedback.setDrawerAccessibility((data[index + 2] & (1 << 6)) != 0);
+    }
+
+    /**
+     * Parses NFC tag information from the data array.
+     *
+     * @param data        Byte array containing the feedback data.
+     * @param index       The current index in the data array.
+     * @param groupSize   The size of the NFC tag group data.
+     * @param boxFeedback The BoxFeedbackV3 object to populate.
+     */
+    private static void parseNfcTags(byte[] data, int index, int groupSize, BoxFeedbackV3 boxFeedback) {
+        int nfcTagNumber = 1;
+        int endIndex = index + groupSize;
+
+        while (index < endIndex && nfcTagNumber <= 3) {
+            int uidLength = data[index] & 0x0F;
+            if (uidLength > 0) {
+                String nfcTagUid = bytesToHex(data, index + 1, uidLength);
+                switch (nfcTagNumber) {
+                    case 1:
+                        boxFeedback.setNfcTag1Uid(nfcTagUid);
+                        break;
+                    case 2:
+                        boxFeedback.setNfcTag2Uid(nfcTagUid);
+                        break;
+                    case 3:
+                        boxFeedback.setNfcTag3Uid(nfcTagUid);
+                        break;
+                    default:
+                        break;
+                }
+                nfcTagNumber++;
+            }
+            index += uidLength + 1;
+        }
+    }
+
+    /**
+     * Converts a byte array to a hexadecimal string.
+     *
+     * @param bytes  The byte array to convert.
+     * @param offset The starting index in the byte array.
+     * @param length The number of bytes to convert.
+     * @return A hexadecimal string representation of the specified bytes.
+     */
+    private static String bytesToHex(byte[] bytes, int offset, int length) {
+        StringBuilder hexString = new StringBuilder();
+        for (int i = offset; i < offset + length; i++) {
+            hexString.append(String.format("%02X", bytes[i]));
+        }
+        return hexString.toString();
     }
 }

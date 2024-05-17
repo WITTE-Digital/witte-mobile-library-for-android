@@ -21,9 +21,9 @@ public class BoxFeedbackV3 {
     // True if the drawer is unlocked, false if drawer is locked
     private boolean drawerAccessibility;
 
-    private String nfcTag1Uid = null;
-    private String nfcTag2Uid = null;
-    private String nfcTag3Uid = null;
+    private String nfcTag1Uid;
+    private String nfcTag2Uid;
+    private String nfcTag3Uid;
 
     /**
      * Gets the battery's state of charge.
@@ -115,27 +115,57 @@ public class BoxFeedbackV3 {
         this.drawerAccessibility = drawerAccessibility;
     }
 
+    /**
+     * Gets the UID of the first NFC tag.
+     *
+     * @return The UID of the first NFC tag.
+     */
     public String getNfcTag1Uid() {
-        return this.nfcTag1Uid;
+        return nfcTag1Uid;
     }
 
+    /**
+     * Sets the UID of the first NFC tag.
+     *
+     * @param nfcTag1Uid The UID of the first NFC tag.
+     */
+    public void setNfcTag1Uid(String nfcTag1Uid) {
+        this.nfcTag1Uid = nfcTag1Uid;
+    }
+
+    /**
+     * Gets the UID of the second NFC tag.
+     *
+     * @return The UID of the second NFC tag.
+     */
     public String getNfcTag2Uid() {
-        return this.nfcTag2Uid;
+        return nfcTag2Uid;
     }
 
+    /**
+     * Sets the UID of the second NFC tag.
+     *
+     * @param nfcTag2Uid The UID of the second NFC tag.
+     */
+    public void setNfcTag2Uid(String nfcTag2Uid) {
+        this.nfcTag2Uid = nfcTag2Uid;
+    }
+
+    /**
+     * Gets the UID of the third NFC tag.
+     *
+     * @return The UID of the third NFC tag.
+     */
     public String getNfcTag3Uid() {
-        return this.nfcTag3Uid;
+        return nfcTag3Uid;
     }
 
-    public void setNfcTag1Uid(String uid) {
-        this.nfcTag1Uid = uid;
-    }
-
-    public void setNfcTag2Uid(String uid) {
-        this.nfcTag2Uid = uid;
-    }
-
-    public void setNfcTag3Uid(String uid) {
-        this.nfcTag3Uid = uid;
+    /**
+     * Sets the UID of the third NFC tag.
+     *
+     * @param nfcTag3Uid The UID of the third NFC tag.
+     */
+    public void setNfcTag3Uid(String nfcTag3Uid) {
+        this.nfcTag3Uid = nfcTag3Uid;
     }
 }
