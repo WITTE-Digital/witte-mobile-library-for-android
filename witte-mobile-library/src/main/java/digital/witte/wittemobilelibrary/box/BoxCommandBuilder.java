@@ -20,37 +20,78 @@ public class BoxCommandBuilder {
     protected final static CommandConfig configUnlockCarLockBox = new CommandConfig(false, true, true, false, false, true);
     protected final static CommandConfig configLockCarLockBox = new CommandConfig(false, true, false, true, false, true);
     protected final static CommandConfig configStatus = new CommandConfig(false, true, false, false, false, false);
+    protected final static CommandConfig configUnlockCarUnlockBoxAndReadNfc = new CommandConfig(false, true, true, false, true, false, true);
+    protected final static CommandConfig configUnlockCarLockBoxAndReadNfc = new CommandConfig(false, true, true, false, false, true, true);
+    protected final static CommandConfig configLockCarLockBoxAndReadNfc = new CommandConfig(false, true, false, true, false, true, true);
+    protected final static CommandConfig configStatusAndReadNfc = new CommandConfig(false, true, false, false, false, false, true);
+    protected final static CommandConfig configReadNfc = new CommandConfig(false, false, false, false, false, false, true);
 
     /**
      * Builds a command to unlock the car and unlock the box.
+     *
      * @return A byte array representing the command.
      */
     public static byte[] buildUnlockCarUnlockBox() {
         return build(configUnlockCarUnlockBox);
     }
 
+    public static byte[] buildUnlockCarUnlockBox(boolean readNfc) {
+        if (readNfc) {
+            return build(configUnlockCarUnlockBoxAndReadNfc);
+        }
+        return build(configUnlockCarUnlockBox);
+    }
+
     /**
      * Builds a command to unlock the car and lock the box.
+     *
      * @return A byte array representing the command.
      */
     public static byte[] buildUnlockCarLockBox() {
         return build(configUnlockCarLockBox);
     }
 
+    public static byte[] buildUnlockCarLockBox(boolean readNfc) {
+        if (readNfc) {
+            return build(configUnlockCarLockBoxAndReadNfc);
+        }
+        return build(configUnlockCarLockBox);
+    }
+
     /**
      * Builds a command to lock the car and lock the box.
+     *
      * @return A byte array representing the command.
      */
     public static byte[] buildLockCarLockBox() {
         return build(configLockCarLockBox);
     }
 
+    public static byte[] buildLockCarLockBox(boolean readNfc) {
+        if (readNfc) {
+            return build(configLockCarLockBoxAndReadNfc);
+        }
+        return build(configLockCarLockBox);
+    }
+
     /**
      * Builds a command to get the status.
+     *
      * @return A byte array representing the command.
      */
     public static byte[] buildStatus() {
         return build(configStatus);
+    }
+
+    public static byte[] buildStatus(boolean readNfc) {
+        if (readNfc) {
+            return build(configStatusAndReadNfc);
+        }
+        return build(configStatus);
+    }
+
+    public static byte[] buildReadNfc() {
+        return build(configReadNfc);
     }
 
     /**
@@ -58,6 +99,7 @@ public class BoxCommandBuilder {
      * The method constructs a command byte array based on the provided configuration.
      * It sets various flags in the command byte array based on the properties of the configuration.
      * It also includes a checksum for data integrity.
+     *
      * @param config The configuration for the command to be built.
      * @return A byte array representing the built command.
      */
@@ -71,7 +113,8 @@ public class BoxCommandBuilder {
      * The method constructs a command byte array based on the provided configuration.
      * It sets various flags in the command byte array based on the properties of the configuration.
      * It also includes a checksum for data integrity.
-     * @param config The configuration for the command to be built.
+     *
+     * @param config      The configuration for the command to be built.
      * @param totalMillis The UNIX timestamp for the command to be built.
      * @return A byte array representing the built command.
      */
@@ -107,6 +150,9 @@ public class BoxCommandBuilder {
             if (config.isStatus()) {
                 commandByte |= BitMask4;
             }
+            if (config.isReadNfc()) {
+                commandByte |= BitMask5;
+            }
             if (config.isFactoryReset()) {
                 commandByte |= BitMask6;
             }
@@ -119,7 +165,8 @@ public class BoxCommandBuilder {
 
             // Compute and set checksum for bytes 1 through 15
             bytes[0] = CRC8.computeChecksum(bytes, 1, 15);
-        } catch (Exception exception) {
+        }
+        catch (Exception exception) {
             exception.printStackTrace();
         }
 
@@ -136,15 +183,17 @@ public class BoxCommandBuilder {
         private final boolean lockCar;
         private final boolean unlockBox;
         private final boolean lockBox;
+        private final boolean readNfc;
 
         /**
          * Initializes a new instance of the CommandConfig class.
+         *
          * @param factoryReset Indicates whether a factory reset command should be built.
-         * @param status Indicates whether a status command should be built.
-         * @param unlockCar Indicates whether a command to unlock the car should be built.
-         * @param lockCar Indicates whether a command to lock the car should be built.
-         * @param unlockBox Indicates whether a command to unlock the box should be built.
-         * @param lockBox Indicates whether a command to lock the box should be built.
+         * @param status       Indicates whether a status command should be built.
+         * @param unlockCar    Indicates whether a command to unlock the car should be built.
+         * @param lockCar      Indicates whether a command to lock the car should be built.
+         * @param unlockBox    Indicates whether a command to unlock the box should be built.
+         * @param lockBox      Indicates whether a command to lock the box should be built.
          */
         public CommandConfig(boolean factoryReset, boolean status, boolean unlockCar, boolean lockCar, boolean unlockBox, boolean lockBox) {
             this.factoryReset = factoryReset;
@@ -153,14 +202,46 @@ public class BoxCommandBuilder {
             this.lockCar = lockCar;
             this.unlockBox = unlockBox;
             this.lockBox = lockBox;
+            this.readNfc = false;
         }
 
-        public boolean isFactoryReset() { return factoryReset; }
-        public boolean isStatus() { return status; }
-        public boolean isUnlockCar() { return unlockCar; }
-        public boolean isLockCar() { return lockCar; }
-        public boolean isUnlockBox() { return unlockBox; }
-        public boolean isLockBox() { return lockBox; }
+        public CommandConfig(boolean factoryReset, boolean status, boolean unlockCar, boolean lockCar, boolean unlockBox, boolean lockBox, boolean readNfc) {
+            this.factoryReset = factoryReset;
+            this.status = status;
+            this.unlockCar = unlockCar;
+            this.lockCar = lockCar;
+            this.unlockBox = unlockBox;
+            this.lockBox = lockBox;
+            this.readNfc = readNfc;
+        }
+
+        public boolean isFactoryReset() {
+            return factoryReset;
+        }
+
+        public boolean isStatus() {
+            return status;
+        }
+
+        public boolean isUnlockCar() {
+            return unlockCar;
+        }
+
+        public boolean isLockCar() {
+            return lockCar;
+        }
+
+        public boolean isUnlockBox() {
+            return unlockBox;
+        }
+
+        public boolean isLockBox() {
+            return lockBox;
+        }
+
+        public boolean isReadNfc() {
+            return readNfc;
+        }
     }
 
     /**
@@ -178,7 +259,8 @@ public class BoxCommandBuilder {
                 for (int j = 0; j < 8; ++j) {
                     if ((crc & 0x80) != 0) {
                         crc = (byte) ((crc << 1) ^ polynomial);
-                    } else {
+                    }
+                    else {
                         crc <<= 1;
                     }
                 }
@@ -188,8 +270,9 @@ public class BoxCommandBuilder {
 
         /**
          * Computes a CRC8 checksum for the given byte array.
-         * @param bytes The byte array for which to compute the checksum.
-         * @param start The start index in the array from which to begin computation.
+         *
+         * @param bytes  The byte array for which to compute the checksum.
+         * @param start  The start index in the array from which to begin computation.
          * @param length The number of bytes to include in the computation.
          * @return The computed CRC8 checksum.
          */

@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-import java.util.Base64;
+import android.util.Base64;
 
 public class BoxCommandBuilderTest {
     @Test
@@ -30,6 +30,21 @@ public class BoxCommandBuilderTest {
 
         byte[] result = BoxCommandBuilder.build(BoxCommandBuilder.configUnlockCarUnlockBox, 1706882019771L);
         assertArrayEquals(expected, result);
+
+        result = BoxCommandBuilder.build(BoxCommandBuilder.configUnlockCarUnlockBoxAndReadNfc);
+        String boxCommandUnlockCarUnlockBoxAndReadNfc = java.util.Base64.getEncoder().encodeToString(result);
+
+        result = BoxCommandBuilder.build(BoxCommandBuilder.configUnlockCarLockBoxAndReadNfc);
+        String boxCommandUnlockCarLockBoxAndReadNfc = java.util.Base64.getEncoder().encodeToString(result);
+
+        result = BoxCommandBuilder.build(BoxCommandBuilder.configLockCarLockBoxAndReadNfc);
+        String boxCommandLockCarLockBoxAndReadNfc = java.util.Base64.getEncoder().encodeToString(result);
+
+        result = BoxCommandBuilder.build(BoxCommandBuilder.configStatusAndReadNfc);
+        String boxCommandStatusAndReadNfc = java.util.Base64.getEncoder().encodeToString(result);
+
+        result = BoxCommandBuilder.build(BoxCommandBuilder.configReadNfc);
+        String boxCommandReadNfc = java.util.Base64.getEncoder().encodeToString(result);
     }
 
     @Test

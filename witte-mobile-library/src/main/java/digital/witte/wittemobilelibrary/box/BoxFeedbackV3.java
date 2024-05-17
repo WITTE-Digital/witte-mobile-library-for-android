@@ -21,6 +21,10 @@ public class BoxFeedbackV3 {
     // True if the drawer is unlocked, false if drawer is locked
     private boolean drawerAccessibility;
 
+    private String nfcTag1Uid = null;
+    private String nfcTag2Uid = null;
+    private String nfcTag3Uid = null;
+
     /**
      * Gets the battery's state of charge.
      *
@@ -109,5 +113,29 @@ public class BoxFeedbackV3 {
      */
     public void setDrawerAccessibility(boolean drawerAccessibility) {
         this.drawerAccessibility = drawerAccessibility;
+    }
+
+    public String getNfcTag1Uid() {
+        return this.nfcTag1Uid;
+    }
+
+    public String getNfcTag2Uid() {
+        return this.nfcTag2Uid;
+    }
+
+    public String getNfcTag3Uid() {
+        return this.nfcTag3Uid;
+    }
+
+    public void setNfcTag1Uid(String uid) {
+        this.nfcTag1Uid = uid;
+    }
+
+    public void setNfcTag2Uid(String uid) {
+        this.nfcTag2Uid = uid;
+    }
+
+    public void setNfcTag3Uid(String uid) {
+        this.nfcTag3Uid = uid;
     }
 }
