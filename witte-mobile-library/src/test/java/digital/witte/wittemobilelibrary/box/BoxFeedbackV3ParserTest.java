@@ -7,6 +7,9 @@ import static org.junit.Assert.*;
 
 public class BoxFeedbackV3ParserTest {
 
+    /**
+     * Unlock car, unlock box
+     */
     @Test
     public void testParseValidDataCase01() {
         byte[] data = {
@@ -41,6 +44,9 @@ public class BoxFeedbackV3ParserTest {
         assertEquals(expected.isDrawerAccessibility(), result.isDrawerAccessibility());
     }
 
+    /**
+     * Unlock car, lock box
+     */
     @Test
     public void testParseValidDataCase02() {
         byte[] data = {
@@ -75,6 +81,9 @@ public class BoxFeedbackV3ParserTest {
         assertEquals(expected.isDrawerAccessibility(), result.isDrawerAccessibility());
     }
 
+    /**
+     * Status
+     */
     @Test
     public void testParseValidDataCase04() {
         byte[] data = {
