@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-import java.util.Base64;
+import android.util.Base64;
 
 public class BoxCommandBuilderTest {
     @Test
@@ -28,8 +28,23 @@ public class BoxCommandBuilderTest {
                 (byte) 0x00  // [15]
         };
 
-        byte[] result = BoxCommandBuilder.build(BoxCommandBuilder.configUnlockCarUnlockBox, 1706882019771L);
+        byte[] result = BoxCommandBuilder.build(BoxCommandBuilder.CONFIG_UNLOCK_CAR_UNLOCK_BOX, 1706882019771L);
         assertArrayEquals(expected, result);
+
+        result = BoxCommandBuilder.build(BoxCommandBuilder.CONFIG_UNLOCK_CAR_UNLOCK_BOX_AND_READ_NFC);
+        String boxCommandUnlockCarUnlockBoxAndReadNfc = java.util.Base64.getEncoder().encodeToString(result);
+
+        result = BoxCommandBuilder.build(BoxCommandBuilder.CONFIG_UNLOCK_CAR_LOCK_BOX_AND_READ_NFC);
+        String boxCommandUnlockCarLockBoxAndReadNfc = java.util.Base64.getEncoder().encodeToString(result);
+
+        result = BoxCommandBuilder.build(BoxCommandBuilder.CONFIG_LOCK_CAR_LOCK_BOX_AND_READ_NFC);
+        String boxCommandLockCarLockBoxAndReadNfc = java.util.Base64.getEncoder().encodeToString(result);
+
+        result = BoxCommandBuilder.build(BoxCommandBuilder.CONFIG_STATUS_AND_READ_NFC);
+        String boxCommandStatusAndReadNfc = java.util.Base64.getEncoder().encodeToString(result);
+
+        result = BoxCommandBuilder.build(BoxCommandBuilder.CONFIG_READ_NFC);
+        String boxCommandReadNfc = java.util.Base64.getEncoder().encodeToString(result);
     }
 
     @Test
@@ -53,7 +68,7 @@ public class BoxCommandBuilderTest {
                 (byte) 0x00  // [15]
         };
 
-        byte[] result = BoxCommandBuilder.build(BoxCommandBuilder.configUnlockCarLockBox, 1706882019771L);
+        byte[] result = BoxCommandBuilder.build(BoxCommandBuilder.CONFIG_UNLOCK_CAR_LOCK_BOX, 1706882019771L);
         assertArrayEquals(expected, result);
     }
 
@@ -78,7 +93,7 @@ public class BoxCommandBuilderTest {
                 (byte) 0x00  // [15]
         };
 
-        byte[] result = BoxCommandBuilder.build(BoxCommandBuilder.configLockCarLockBox, 1706882019771L);
+        byte[] result = BoxCommandBuilder.build(BoxCommandBuilder.CONFIG_LOCK_CAR_LOCK_BOX, 1706882019771L);
         assertArrayEquals(expected, result);
     }
 
@@ -103,7 +118,7 @@ public class BoxCommandBuilderTest {
                 (byte) 0x00  // [15]
         };
 
-        byte[] result = BoxCommandBuilder.build(BoxCommandBuilder.configStatus, 1706882019771L);
+        byte[] result = BoxCommandBuilder.build(BoxCommandBuilder.CONFIG_STATUS, 1706882019771L);
         assertArrayEquals(expected, result);
     }
 }

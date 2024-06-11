@@ -6,20 +6,21 @@ package digital.witte.wittemobilelibrary.box;
  * charger connection status, drawer state, and drawer accessibility.
  */
 public class BoxFeedbackV3 {
-    // Represents battery's state of charge as a percentage (0-100)
     private byte batteryStateOfCharge;
 
-    // True if the battery is currently charging
     private boolean batteryIsCharging;
 
-    // True if the charger is connected
     private boolean batteryChargerIsConnected;
 
-    // True if the drawer is opened, false if drawer is closed
     private boolean drawerState;
 
-    // True if the drawer is unlocked, false if drawer is locked
     private boolean drawerAccessibility;
+
+    private String nfcTag1Uid;
+
+    private String nfcTag2Uid;
+
+    private String nfcTag3Uid;
 
     /**
      * Gets the battery's state of charge.
@@ -109,5 +110,59 @@ public class BoxFeedbackV3 {
      */
     public void setDrawerAccessibility(boolean drawerAccessibility) {
         this.drawerAccessibility = drawerAccessibility;
+    }
+
+    /**
+     * Gets the UID of the first NFC tag.
+     *
+     * @return The UID of the first NFC tag.
+     */
+    public String getNfcTag1Uid() {
+        return nfcTag1Uid;
+    }
+
+    /**
+     * Sets the UID of the first NFC tag.
+     *
+     * @param nfcTag1Uid The UID of the first NFC tag.
+     */
+    public void setNfcTag1Uid(String nfcTag1Uid) {
+        this.nfcTag1Uid = nfcTag1Uid;
+    }
+
+    /**
+     * Gets the UID of the second NFC tag.
+     *
+     * @return The UID of the second NFC tag.
+     */
+    public String getNfcTag2Uid() {
+        return nfcTag2Uid;
+    }
+
+    /**
+     * Sets the UID of the second NFC tag.
+     *
+     * @param nfcTag2Uid The UID of the second NFC tag.
+     */
+    public void setNfcTag2Uid(String nfcTag2Uid) {
+        this.nfcTag2Uid = nfcTag2Uid;
+    }
+
+    /**
+     * Gets the UID of the third NFC tag.
+     *
+     * @return The UID of the third NFC tag.
+     */
+    public String getNfcTag3Uid() {
+        return nfcTag3Uid;
+    }
+
+    /**
+     * Sets the UID of the third NFC tag.
+     *
+     * @param nfcTag3Uid The UID of the third NFC tag.
+     */
+    public void setNfcTag3Uid(String nfcTag3Uid) {
+        this.nfcTag3Uid = nfcTag3Uid;
     }
 }

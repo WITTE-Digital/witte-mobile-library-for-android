@@ -7,6 +7,9 @@ import static org.junit.Assert.*;
 
 public class BoxFeedbackV3ParserTest {
 
+    /**
+     * Unlock car, unlock box
+     */
     @Test
     public void testParseValidDataCase01() {
         byte[] data = {
@@ -41,6 +44,9 @@ public class BoxFeedbackV3ParserTest {
         assertEquals(expected.isDrawerAccessibility(), result.isDrawerAccessibility());
     }
 
+    /**
+     * Unlock car, lock box
+     */
     @Test
     public void testParseValidDataCase02() {
         byte[] data = {
@@ -75,6 +81,9 @@ public class BoxFeedbackV3ParserTest {
         assertEquals(expected.isDrawerAccessibility(), result.isDrawerAccessibility());
     }
 
+    /**
+     * Status
+     */
     @Test
     public void testParseValidDataCase04() {
         byte[] data = {
@@ -138,5 +147,31 @@ public class BoxFeedbackV3ParserTest {
         BoxFeedbackV3 result = BoxFeedbackV3Parser.parse(data);
 
         assertNull(result);
+    }
+
+    @Test
+    public void testParseValidDataCase01With2NfcTags() {
+        BoxFeedbackV3 expected = new BoxFeedbackV3();
+        expected.setBatteryStateOfCharge((byte) 86);
+        expected.setBatteryIsCharging(false);
+        expected.setBatteryChargerIsConnected(false);
+        expected.setDrawerState(false);
+        expected.setDrawerAccessibility(true);
+        expected.setNfcTag1Uid("041858DA181390");
+        expected.setNfcTag2Uid("04758ECAF26281");
+
+        String base64 = "AQACAQADEAcEGFjaGBOQBwR1jsryYoEBA1ZBQA==";
+        byte[] data = java.util.Base64.getDecoder().decode(base64);
+        BoxFeedbackV3 result = BoxFeedbackV3Parser.parse(data);
+
+        assertNotNull(result);
+        assertEquals(expected.getBatteryStateOfCharge(), result.getBatteryStateOfCharge());
+        assertEquals(expected.isBatteryIsCharging(), result.isBatteryIsCharging());
+        assertEquals(expected.isBatteryChargerIsConnected(), result.isBatteryChargerIsConnected());
+        assertEquals(expected.isDrawerState(), result.isDrawerState());
+        assertEquals(expected.isDrawerAccessibility(), result.isDrawerAccessibility());
+        assertEquals(expected.getNfcTag1Uid(), result.getNfcTag1Uid());
+        assertEquals(expected.getNfcTag2Uid(), result.getNfcTag2Uid());
+        assertEquals(expected.getNfcTag3Uid(), result.getNfcTag3Uid());
     }
 }

@@ -6,7 +6,7 @@ def githubProperties = new Properties()
 githubProperties.load(new FileInputStream(githubPropertiesFile))
 
 def getVersionName = { ->
-    return "3.0.0"
+    return "3.1.0"
 }
 
 def getArtificatId = { ->
@@ -37,14 +37,15 @@ publishing{
 }
 
 android {
-    compileSdkVersion 31
+    namespace "digital.witte.wittemobilelibrary"
+    compileSdk 34
     testOptions.unitTests.includeAndroidResources = true
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 31
-        versionCode 4
-        versionName "3.0.0"
+        targetSdkVersion 34
+        versionCode 5
+        versionName "3.1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -62,10 +63,10 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.annotation:annotation:1.4.0'
-    testImplementation 'junit:junit:4.12'
+    implementation 'androidx.annotation:annotation:1.8.0'
+    testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.robolectric:robolectric:4.7.3'
-    testImplementation 'androidx.test:core:1.4.0'
+    testImplementation 'androidx.test:core:1.5.0'
     testImplementation project(path: ':witte-mobile-library')
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'

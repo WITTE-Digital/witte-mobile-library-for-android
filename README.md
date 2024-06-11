@@ -43,22 +43,39 @@ String physicalLockId = "BADBCPCU";
 String boxId = BoxIdConverter.toBoxId(physicalLockId);
 ```
 ### Box feedback interpretation
-In order to determine if the box has been opened or closed one needs to evaluate the 10 byte box feedback that is part of the result of a triggerLockAsync method call. This library provides a parser for the 10 byte box feedback that allows to determine the state of the box.
+The box feedback encapsulates state information of a flinkey box, including its battery and drawer status, as well as NFC tag IDs. 
+
+`BoxFeedbackV3Parser` is provided to parse a byte array containing feedback data and populate a `BoxFeedbackV3` object with this information.
 
 ```java
 import digital.witte.wittemobilelibrary.box;
 
-// the 10 byte box feedback as returned by triggerLockAsync(...)
-byte[] bytes = ByteUtils.toByteArray("4C420FFA5008003700D8")
+byte[] boxFeedbackData = ...
 
-BoxFeedback boxFeedback = BoxFeedback.create(bytes);
-if(BoxState.DRAWER_OPEN == boxFeedback.getBoxState()){
-    // the drawer of the box is opened
-}
-else if(BoxState.LOCKED == boxFeedback.getBoxState()){
-    // the box has been locked
-}
-else if(BoxState.UNLOCKED == boxFeedback.getBoxState()){
-    // the box has been opened
+// Parse the feedback data
+BoxFeedbackV3 boxFeedback = BoxFeedbackV3Parser.parse(boxFeedbackData);
+
+if (null != feedback) {
+    System.out.println("Battery state of charge: " + boxFeedback.getBatteryStateOfCharge() + "%");
+    System.out.println("Battery is charging: " + boxFeedback.isBatteryIsCharging());
+    System.out.println("Battery charger is connected: " + boxFeedback.isBatteryChargerIsConnected());
+    System.out.println("Drawer state: " + (boxFeedback.isDrawerState() ? "Open" : "Closed"));
+    System.out.println("Drawer accessibility: " + (boxFeedback.isDrawerAccessibility() ? "Unlocked" : "Locked"));
+    System.out.println("NFC Tag 1 UID: " + boxFeedback.getNfcTag1Uid());
+    System.out.println("NFC Tag 2 UID: " + boxFeedback.getNfcTag2Uid());
+    System.out.println("NFC Tag 3 UID: " + boxFeedback.getNfcTag3Uid());
+} 
+else {
+    System.out.println("Failed to parse feedback data.");
 }
 ```
+
+---
+
+⚠️ **Important Note:** 
+
+If the byte array representing the box feedback data has a length of exactly 10, it indicates that you are dealing with an older version of the flinkey box. For this older version, you should use the `BoxFeedback` class to process the data.
+
+The current version, known as the flinkey BLE box, generates feedback data in byte arrays of lengths other than 10. Therefore ensure that the feedback data byte array does not have a length of 10 when using the `BoxFeedbackV3` class.
+
+---
