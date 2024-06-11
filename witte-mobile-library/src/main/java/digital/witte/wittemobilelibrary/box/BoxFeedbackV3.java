@@ -6,23 +6,20 @@ package digital.witte.wittemobilelibrary.box;
  * charger connection status, drawer state, and drawer accessibility.
  */
 public class BoxFeedbackV3 {
-    // Represents battery's state of charge as a percentage (0-100)
     private byte batteryStateOfCharge;
 
-    // True if the battery is currently charging
     private boolean batteryIsCharging;
 
-    // True if the charger is connected
     private boolean batteryChargerIsConnected;
 
-    // True if the drawer is opened, false if drawer is closed
     private boolean drawerState;
 
-    // True if the drawer is unlocked, false if drawer is locked
     private boolean drawerAccessibility;
 
     private String nfcTag1Uid;
+
     private String nfcTag2Uid;
+
     private String nfcTag3Uid;
 
     /**

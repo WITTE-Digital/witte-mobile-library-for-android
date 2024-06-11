@@ -130,7 +130,7 @@ public class BoxCommandBuilder {
      * It sets various flags in the command byte array based on the properties of the configuration.
      * It also includes a checksum for data integrity.
      *
-     * @param config The configuration for the command to be built.
+     * @param config      The configuration for the command to be built.
      * @param totalMillis The UNIX timestamp for the command to be built.
      * @return A byte array representing the built command.
      */
@@ -191,11 +191,11 @@ public class BoxCommandBuilder {
          * Initializes a new instance of the CommandConfig class.
          *
          * @param factoryReset Indicates whether a factory reset command should be built.
-         * @param status Indicates whether a status command should be built.
-         * @param unlockCar Indicates whether a command to unlock the car should be built.
-         * @param lockCar Indicates whether a command to lock the car should be built.
-         * @param unlockBox Indicates whether a command to unlock the box should be built.
-         * @param lockBox Indicates whether a command to lock the box should be built.
+         * @param status       Indicates whether a status command should be built.
+         * @param unlockCar    Indicates whether a command to unlock the car should be built.
+         * @param lockCar      Indicates whether a command to lock the car should be built.
+         * @param unlockBox    Indicates whether a command to unlock the box should be built.
+         * @param lockBox      Indicates whether a command to lock the box should be built.
          */
         public CommandConfig(boolean factoryReset, boolean status, boolean unlockCar, boolean lockCar, boolean unlockBox, boolean lockBox) {
             this(factoryReset, status, unlockCar, lockCar, unlockBox, lockBox, false);
@@ -205,12 +205,12 @@ public class BoxCommandBuilder {
          * Initializes a new instance of the CommandConfig class with an option for reading NFC.
          *
          * @param factoryReset Indicates whether a factory reset command should be built.
-         * @param status Indicates whether a status command should be built.
-         * @param unlockCar Indicates whether a command to unlock the car should be built.
-         * @param lockCar Indicates whether a command to lock the car should be built.
-         * @param unlockBox Indicates whether a command to unlock the box should be built.
-         * @param lockBox Indicates whether a command to lock the box should be built.
-         * @param readNfc Indicates whether a command to read NFC should be built.
+         * @param status       Indicates whether a status command should be built.
+         * @param unlockCar    Indicates whether a command to unlock the car should be built.
+         * @param lockCar      Indicates whether a command to lock the car should be built.
+         * @param unlockBox    Indicates whether a command to unlock the box should be built.
+         * @param lockBox      Indicates whether a command to lock the box should be built.
+         * @param readNfc      Indicates whether a command to read NFC should be built.
          */
         public CommandConfig(boolean factoryReset, boolean status, boolean unlockCar, boolean lockCar, boolean unlockBox, boolean lockBox, boolean readNfc) {
             this.factoryReset = factoryReset;
@@ -261,9 +261,9 @@ public class BoxCommandBuilder {
         // Initialize the CRC table with a specific polynomial.
         static {
             final byte POLYNOMIAL = (byte) 0x1D; // Polynomial for CRC-8
-            for (int i = 0; i < 256; ++i) {
+            for (int i = 0; i < 256; i++) {
                 byte crc = (byte) i;
-                for (int j = 0; j < 8; ++j) {
+                for (int j = 0; j < 8; j++) {
                     crc = (byte) ((crc & 0x80) != 0 ? (crc << 1) ^ POLYNOMIAL : crc << 1);
                 }
                 CRC_TABLE[i] = crc;
@@ -273,14 +273,14 @@ public class BoxCommandBuilder {
         /**
          * Computes a CRC8 checksum for the given byte array.
          *
-         * @param bytes The byte array for which to compute the checksum.
-         * @param start The start index in the array from which to begin computation.
+         * @param bytes  The byte array for which to compute the checksum.
+         * @param start  The start index in the array from which to begin computation.
          * @param length The number of bytes to include in the computation.
          * @return The computed CRC8 checksum.
          */
         public static byte computeChecksum(byte[] bytes, int start, int length) {
             byte crc = 0;
-            for (int i = start; i < start + length; ++i) {
+            for (int i = start; i < start + length; i++) {
                 byte index = (byte) (crc ^ bytes[i]);
                 crc = CRC_TABLE[index & 0xFF];
             }

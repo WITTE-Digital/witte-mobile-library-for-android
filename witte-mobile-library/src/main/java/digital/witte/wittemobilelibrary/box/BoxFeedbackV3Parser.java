@@ -27,7 +27,7 @@ public class BoxFeedbackV3Parser {
         BoxFeedbackV3 boxFeedback = null;
         int index = RESPONSE_HEADER_LENGTH;
 
-        while (index+1 < data.length) {
+        while (index + 1 < data.length) {
             int groupNo = data[index++];
             int groupSize = data[index++];
 
@@ -64,24 +64,24 @@ public class BoxFeedbackV3Parser {
     /**
      * Parses battery and drawer state information from the data array.
      *
-     * @param data Byte array containing the feedback data.
-     * @param index The current index in the data array.
+     * @param data        Byte array containing the feedback data.
+     * @param index       The current index in the data array.
      * @param boxFeedback The BoxFeedbackV3 object to populate.
      */
     private static void parseBatteryAndDrawerState(byte[] data, int index, BoxFeedbackV3 boxFeedback) {
         boxFeedback.setBatteryStateOfCharge((byte) (data[index] & 0x7F));
-        boxFeedback.setBatteryIsCharging((data[index] & (1 << 7)) != 0);
-        boxFeedback.setBatteryChargerIsConnected((data[index + 1] & (1 << 7)) != 0);
-        boxFeedback.setDrawerState((data[index + 2] & (1 << 7)) != 0);
-        boxFeedback.setDrawerAccessibility((data[index + 2] & (1 << 6)) != 0);
+        boxFeedback.setBatteryIsCharging(0 != (data[index] & (1 << 7)));
+        boxFeedback.setBatteryChargerIsConnected(0 != (data[index + 1] & (1 << 7)));
+        boxFeedback.setDrawerState(0 != (data[index + 2] & (1 << 7)));
+        boxFeedback.setDrawerAccessibility(0 != (data[index + 2] & (1 << 6)));
     }
 
     /**
      * Parses NFC tag information from the data array.
      *
-     * @param data Byte array containing the feedback data.
-     * @param index The current index in the data array.
-     * @param groupSize The size of the NFC tag group data.
+     * @param data        Byte array containing the feedback data.
+     * @param index       The current index in the data array.
+     * @param groupSize   The size of the NFC tag group data.
      * @param boxFeedback The BoxFeedbackV3 object to populate.
      */
     private static void parseNfcTags(byte[] data, int index, int groupSize, BoxFeedbackV3 boxFeedback) {
@@ -114,7 +114,7 @@ public class BoxFeedbackV3Parser {
     /**
      * Converts a byte array to a hexadecimal string.
      *
-     * @param bytes The byte array to convert.
+     * @param bytes  The byte array to convert.
      * @param offset The starting index in the byte array.
      * @param length The number of bytes to convert.
      * @return A hexadecimal string representation of the specified bytes.

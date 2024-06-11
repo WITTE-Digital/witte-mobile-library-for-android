@@ -135,6 +135,7 @@ public class BoxIdConverter {
 
     /**
      * Check if a string is a valid flinkey Box ID.
+     *
      * @param boxId flinkey Box ID.
      * @return true if parameter boxId is is a valid flinkey Box ID.
      */
